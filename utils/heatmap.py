@@ -1,34 +1,19 @@
-import numpy as np
 import cv2
-import config.settings as settings
+import numpy as np
 
 def generate_heatmap(frame, objects):
 
-    frame = cv2.resize(frame, (settings.FRAME_WIDTH, settings.FRAME_HEIGHT))
-
-    # 🔥 RESET HEATMAP EVERY FRAME (NO MEMORY)
-    heat = np.zeros((settings.FRAME_HEIGHT, settings.FRAME_WIDTH), dtype=np.float32)
+    heatmap = np.zeros((frame.shape[0], frame.shape[1]), dtype=np.float32)
 
     for (_, x, y, w, h) in objects:
+        cx = x + w//2
+        cy = y + h//2
 
-        # STRICT FILTER AGAIN
-        if w < 60 or h < 120:
-            continue
+        cv2.circle(heatmap, (cx, cy), 50, 1, -1)
 
-        cx = int(x + w // 2)
-        cy = int(y + h // 2)
+    heatmap = cv2.GaussianBlur(heatmap, (51,51), 0)
 
-        if 0 <= cx < settings.FRAME_WIDTH and 0 <= cy < settings.FRAME_HEIGHT:
-            cv2.circle(heat, (cx, cy), 40, 1, -1)
+    heatmap = np.uint8(255 * heatmap / np.max(heatmap + 1e-5))
+    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
 
-    # Smooth
-    heat = cv2.GaussianBlur(heat, (31, 31), 0)
-
-    heat_norm = cv2.normalize(heat, None, 0, 255, cv2.NORM_MINMAX)
-    heat_uint8 = heat_norm.astype(np.uint8)
-
-    heatmap = cv2.applyColorMap(heat_uint8, cv2.COLORMAP_JET)
-
-    overlay = cv2.addWeighted(frame, 0.75, heatmap, 0.25, 0)
-
-    return overlay
+    return cv2.addWeighted(frame, 0.6, heatmap, 0.4, 0)
