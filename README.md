@@ -51,3 +51,16 @@ large-scale events such as festivals, concerts, and religious gatherings.
 ---
 
 ## How It Works
+Camera Feed
+↓
+YOLOv8 Detection → Person bounding boxes
+↓
+DeepSORT Tracker → Unique person IDs across frames
+↓
+Density Engine → People count per zone
+↓
+Risk Engine → SAFE / WARNING / CRITICAL per zone
+↓
+Trend Engine → Growth rate + 10s prediction + crash forecast
+↓
+Alert System → Sound + SMS + Dashboard update
