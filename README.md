@@ -64,3 +64,77 @@ Risk Engine → SAFE / WARNING / CRITICAL per zone
 Trend Engine → Growth rate + 10s prediction + crash forecast
 ↓
 Alert System → Sound + SMS + Dashboard update
+
+---
+
+## Getting Started
+
+### 1. Clone the repo
+```bash
+git clone https://github.com/yourusername/CrowdX.git
+cd CrowdX
+```
+
+### 2. Install dependencies
+```bash
+pip install ultralytics opencv-python deep-sort-realtime fastapi uvicorn twilio numpy
+```
+
+### 3. Configure settings
+Edit `config/settings.py`:
+```python
+FRAME_WIDTH      = 800
+FRAME_HEIGHT     = 600
+ROWS             = 3
+COLS             = 3
+ALERT_THRESHOLD  = 10   # tune to your venue
+```
+
+### 4. Run the server
+```bash
+uvicorn server:app --host 0.0.0.0 --port 8000
+```
+
+### 5. Open the dashboard
+Open `crowdx_dashboard.html` in any browser.
+The green dot in the bottom bar confirms the server is connected.
+
+---
+
+## Alert System
+
+When crowd density surges, CrowdX fires a two-stage alert:
+
+**Stage 1 — Early Warning** (before threshold is crossed)
+Triggered when the trend engine predicts the crowd will reach dangerous
+density within the next 10 seconds. Gives organisers time to redirect
+crowd flow before a crush occurs.
+
+**Stage 2 — Overcrowd Alert** (threshold crossed)
+Triggered when an actual zone hits critical density. Includes unsafe zone
+list and live Google Maps location link.
+
+Both stages send SMS via Twilio and update the live dashboard simultaneously.
+
+---
+
+## Real-World Use Cases
+
+- Music festivals and outdoor concerts
+- Religious gatherings and pilgrimages  
+- Stadium entry and exit management
+- Public transport hubs during peak hours
+- Emergency evacuation monitoring
+
+---
+
+## Built At
+
+This project was built during a hackathon focused on public safety 
+and AI for social good.
+
+---
+
+## License
+
+MIT License — free to use, modify, and distribute.
